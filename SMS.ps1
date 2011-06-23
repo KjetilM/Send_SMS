@@ -1,4 +1,8 @@
-﻿Function SendSMS
+﻿#Small and simple PowerShell function for sending SMS via the SMS gateway from pswincom (http://www.pswin.com)
+#You need a valid account with pswincom, se homepage for details
+
+
+Function SendSMS
 {
 	Param
 	(
@@ -6,7 +10,7 @@
 		[string]$Password = $(Throw 'No Password provided'),
 		[string]$Receiver = $(Throw 'No Receivernumber provided'),
 		[string]$Url = 'http://gw2-fro.pswin.com:81/',
-		[string]$Message,
+		[string]$Message= $(Throw 'No message provided'),
 		[boolean]$Debug
 		
 	)
@@ -21,3 +25,8 @@
 
 }
 
+#usage:
+#$Result = SendSMS -UserName 'Username' -Password 'Password' -Receiver '12345678' -Url 'http://gw2-fro.pswin.com:81' -Message 'Message to Send' -debug 'True' 
+#You must provide a username, password, Receiver and message 
+#Url is optional default is ok for most cases. 
+#Debug will echo the XML to use in the 'POST' to console
