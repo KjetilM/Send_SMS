@@ -1,5 +1,5 @@
 ﻿function BuildXML
-#supply username and password and HashTable with Reciever/Message pairs.
+#supply username and password and HashTable with message objects built with function "CreateMessageObjects".#
 #the function will generate a XML object that can be used to submitt messages to PSWinCom SMS Gateway (www.pswin.com)
 {
 	param
@@ -7,6 +7,7 @@
 		[string]$UserName = $(Throw 'No username provided'),
 		[string]$Password = $(Throw 'No Password provided'),
 		[Hashtable]$HTBL_RCV_MSG= $(Throw 'No message provided')
+
 		
 	)
 	$SMS_XML = New-Object XML
@@ -25,9 +26,9 @@
 		$XML_ID = $SMS_XML.CreateElement('ID')
 		$XML_ID.set_innerText($ID)
 		$XML_Text = $SMS_XML.CreateElement('TEXT')
-		$XML_Text.Set_innerText($HTBL_RCV_MSG.$Message)
+		$XML_Text.Set_innerText($HTBL_RCV_MSG.item($Message).Message_text)
 		$XML_RCV = $SMS_XML.CreateElement('RCV')
-		$XML_RCV.Set_InnerText($Message)
+		$XML_RCV.Set_InnerText($HTBL_RCV_MSG.item($Message).Receiver)
 		
 			$XML_MSGLST.AppendChild($XML_MSG)
 			$XML_MSG.AppendChild($XML_ID)
@@ -40,7 +41,7 @@
 	$SMS_XML["SESSION"].AppendChild($XML_Client)
 	$SMS_XML["SESSION"].AppendChild($XML_PW)
 	$SMS_XML["SESSION"].AppendChild($XML_MSGLST)
-	
+	Write-Host $SMS_XML.OuterXml.ToString()
 	
 	return $SMS_XML
 	
@@ -53,9 +54,9 @@ Function SendSMS
 {
 	Param
 	(
-	[string]$XMLBLOCK,
-	[Boolean]$Debug,
-	[STRING]$Url = 'http://gw2-fro.pswin.com:81/'
+		[string]$XMLBLOCK,
+		[Boolean]$Debug,
+		[STRING]$Url = 'http://gw2-fro.pswin.com:81/'
 	)
 	
 	If($Debug -eq 'TRUE')
@@ -68,16 +69,59 @@ Function SendSMS
 	return $HttpResponse
 
 }
-$MSG_RCV = @{}
-$MSG_RCV.'[RECEIVER1]' = '[MESSAGE1]'
-$MSG_RCV.'[RECEIVER2]' = '[MESSAGE2]'
-$MSG_RCV.'[RECEIVER3]' = '[MESSAGE3]'
+function CreateMessageObjects
+#builds message objects that can be stored in a hashtable and then sent to the buildXML function.
 
-#build the XML to be submitted.
-#Powershell collects the resulting XML from the function and stuffs it in an array so we need to itterate that afterwards.
-$XML_DATA = BuildXML -UserName 'username' -Password 'password' -HTBL_RCV_MSG $msg_rcv
+{
+	Param
+	(
+		[String]$Receiver,
+		[String]$Message_text,
+		[String]$Tarriff,
+		[String]$MessageClass,
+		[String]$Sender,
+		[String]$TTL,
+		[String]$deliverytime
+		
+	)
+	$Message = New-Object PSObject
+	Add-Member -Input $Message NoteProperty 'Receiver' $Receiver
+	Add-Member -Input $Message NoteProperty 'Message_text' $Message_text
+	Add-Member -Input $Message NoteProperty 'Tarriff' $Tarriff #not yet implemented
+	Add-Member -Input $Message NoteProperty 'MessageClass' $MessageClass #not yet implemented
+	Add-Member -Input $Message NoteProperty 'Sender' $Sender #not yet implemented
+	Add-Member -Input $Message NoteProperty 'TTL' $TTL #not yet implemented
+	Add-Member -Input $Message NoteProperty 'deliverytime' $deliverytime #not yet implemented
+	
+	Return $Message
+}
 
-#submit XML as string to sender.
-#The sender uses UploadString method so we need to send outerXml as string.
-#[-1] is last element in Array, and will be the one containg the OuterXml we need. 
-SendSMS -XMLBLOCK $XML_DATA[-1].Outerxml.tostring() -Debug $true -Url 'http://gw2-fro.pswin.com:81'
+#usage
+$MSG_LIST = @{} #initialize Hashtable
+
+#create message object
+$MSG_OBJ = CreateMessageObjects -Receiver '4712345678' -Message_text 'Test Message'
+#add object to Hashtable
+$MSG_LIST.Add($MSG_LIST.Count + 1,$MSG_OBJ)
+
+# and again
+$MSG_OBJ = CreateMessageObjects -Receiver '4712345678' -Message_text 'Test Message2'
+$MSG_LIST.Add($MSG_LIST.Count + 1,$MSG_OBJ)
+
+# and again
+$MSG_OBJ = CreateMessageObjects -Receiver '4712345678' -Message_text 'Test Message3'
+$MSG_LIST.Add($MSG_LIST.Count + 1,$MSG_OBJ)
+
+# and again
+$MSG_OBJ = CreateMessageObjects -Receiver '4712345678' -Message_text 'Test Message4'
+$MSG_LIST.Add($MSG_LIST.Count + 1,$MSG_OBJ)
+
+# and again
+$MSG_OBJ = CreateMessageObjects -Receiver '4712345678' -Message_text 'Test Message5'
+$MSG_LIST.Add($MSG_LIST.Count + 1,$MSG_OBJ)
+
+#send hashtable to BuildXML with username and password to get the XML
+$Message_xml = buildxml -UserName 'username' -Password 'password' -HTBL_RCV_MSG $MSG_LIST
+
+#grab the String version of the Xml and send that to sendSMS for submittion to PSWinCom Gateway.
+sendSMS -XMLBLOCK $Message_xml[-1].outerxml.tostring()

@@ -1,2 +1,22 @@
 First version of Send SMS Script for PowerShell. 
 you will need a valid gateway account with PSWinCom (www.pswin.com)
+
+
+############
+SendSMS.ps1:
+############
+is a simple example. it uses string replacement on an existing XML String and submitts that to the PSWinCom Gateway
+
+
+
+
+
+#####################
+SMS_SendMultiple.ps1:
+#####################
+uses a Custom object to store messages before submitting. 
+This way you can build a list of messages to be submitted, i.e use Get-Content from a Text File.
+the properties that are mandatory is Receiver and Message_text 
+
+Store the message objects in a Hashtable then send the hashtable along with your username and password to the BuildXML function
+The resulting XML can be used ( outerxml in string format ) to submitt messages to the PSWinCom Gateway
