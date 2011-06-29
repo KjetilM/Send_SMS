@@ -19,4 +19,4 @@ This way you can build a list of messages to be submitted, i.e use Get-Content f
 the properties that are mandatory is Receiver and Message_text 
 
 Store the message objects in a Hashtable then send the hashtable along with your username and password to the BuildXML function
-The resulting XML can be used ( outerxml in string format ) to submitt messages to the PSWinCom Gateway
+The resulting XML can be used ( outerxml in string format ) to submit messages to the PSWinCom Gateway

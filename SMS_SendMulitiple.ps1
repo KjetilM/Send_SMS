@@ -29,11 +29,30 @@
 		$XML_Text.Set_innerText($HTBL_RCV_MSG.item($Message).Message_text)
 		$XML_RCV = $SMS_XML.CreateElement('RCV')
 		$XML_RCV.Set_InnerText($HTBL_RCV_MSG.item($Message).Receiver)
+		if($HTBL_RCV_MSG.item($Message).Sender -ne $null)
+		{
+			$XML_SND = $SMS_XML.CreateElement('SND')
+			$XML_SND.Set_InnerText($HTBL_RCV_MSG.item($Message).Sender)
+		}
+		if($HTBL_RCV_MSG.item($Message).Deliverytime -ne $null)
+		{
+			$XML_DELIVERYTIME = $SMS_XML.CreateElement('DELIVERYTIME')
+			$XML_DELIVERYTIME.Set_InnerText($HTBL_RCV_MSG.item($Message).DELIVERYTIME)
+		}
 		
+		if($HTBL_RCV_MSG.item($Message).Deliverytime -ne $null)
+		{
+			$XML_TTL = $SMS_XML.CreateElement('TTL')
+			$XML_TTL.Set_InnerText($HTBL_RCV_MSG.item($Message).DELIVERYTIME)
+		}
+
 			$XML_MSGLST.AppendChild($XML_MSG)
 			$XML_MSG.AppendChild($XML_ID)
 			$XML_MSG.AppendChild($XML_TEXT)
 			$XML_MSG.AppendChild($XML_RCV)
+			$XML_MSG.AppendChild($XML_SND)
+			$XML_MSG.AppendChild($XML_DELIVERYTIME)
+			$XML_MSG.AppendChild($XML_TTL)
 		$ID++
 	}
 	#/MessageList_Block		
@@ -75,8 +94,8 @@ function CreateMessageObjects
 {
 	Param
 	(
-		[String]$Receiver,
-		[String]$Message_text,
+		[String]$Receiver = $(Throw 'You must provide a Receiver'),
+		[String]$Message_text= $(Throw 'You must provide a Message'),
 		[String]$Tarriff,
 		[String]$MessageClass,
 		[String]$Sender,
@@ -89,39 +108,9 @@ function CreateMessageObjects
 	Add-Member -Input $Message NoteProperty 'Message_text' $Message_text
 	Add-Member -Input $Message NoteProperty 'Tarriff' $Tarriff #not yet implemented
 	Add-Member -Input $Message NoteProperty 'MessageClass' $MessageClass #not yet implemented
-	Add-Member -Input $Message NoteProperty 'Sender' $Sender #not yet implemented
-	Add-Member -Input $Message NoteProperty 'TTL' $TTL #not yet implemented
-	Add-Member -Input $Message NoteProperty 'deliverytime' $deliverytime #not yet implemented
+	Add-Member -Input $Message NoteProperty 'Sender' $Sender #Number or Name of sender.
+	Add-Member -Input $Message NoteProperty 'TTL' $TTL #time to live in Minutes
+	Add-Member -Input $Message NoteProperty 'deliverytime' $deliverytime #YYYYMMDDHHmm
 	
 	Return $Message
 }
-
-#usage
-$MSG_LIST = @{} #initialize Hashtable
-
-#create message object
-$MSG_OBJ = CreateMessageObjects -Receiver '4712345678' -Message_text 'Test Message'
-#add object to Hashtable
-$MSG_LIST.Add($MSG_LIST.Count + 1,$MSG_OBJ)
-
-# and again
-$MSG_OBJ = CreateMessageObjects -Receiver '4712345678' -Message_text 'Test Message2'
-$MSG_LIST.Add($MSG_LIST.Count + 1,$MSG_OBJ)
-
-# and again
-$MSG_OBJ = CreateMessageObjects -Receiver '4712345678' -Message_text 'Test Message3'
-$MSG_LIST.Add($MSG_LIST.Count + 1,$MSG_OBJ)
-
-# and again
-$MSG_OBJ = CreateMessageObjects -Receiver '4712345678' -Message_text 'Test Message4'
-$MSG_LIST.Add($MSG_LIST.Count + 1,$MSG_OBJ)
-
-# and again
-$MSG_OBJ = CreateMessageObjects -Receiver '4712345678' -Message_text 'Test Message5'
-$MSG_LIST.Add($MSG_LIST.Count + 1,$MSG_OBJ)
-
-#send hashtable to BuildXML with username and password to get the XML
-$Message_xml = buildxml -UserName 'username' -Password 'password' -HTBL_RCV_MSG $MSG_LIST
-
-#grab the String version of the Xml and send that to sendSMS for submittion to PSWinCom Gateway.
-sendSMS -XMLBLOCK $Message_xml[-1].outerxml.tostring()
