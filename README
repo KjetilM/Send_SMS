@@ -12,11 +12,16 @@ is a simple example. it uses string replacement on an existing XML String and su
 
 
 #####################
-SMS_SendMultiple.ps1:
+PSW_PowerShell.ps1
 #####################
-uses a Custom object to store messages before submitting. 
-This way you can build a list of messages to be submitted, i.e use Get-Content from a Text File.
-the properties that are mandatory is Receiver and Message_text 
+Collection of Functions that can be used to send SMS messges via PSWinCom gateway
+DotSource this file into your own scripts to get access to the functions. 
 
-Store the message objects in a Hashtable then send the hashtable along with your username and password to the BuildXML function
-The resulting XML can be used ( outerxml in string format ) to submit messages to the PSWinCom Gateway
+First you need to create the individual message objects with 'CreateMessageObjects'
+Store these message objects in a HashTable.
+when finnished adding all the messages you want to send, you can hand this HashTable overt to:
+
+BuildXML along with you Username and Password at the PSWinCom Gateway.
+This will build a XML that can be handed to SendSMS.
+
+SendSMS need the innerxml as a string as we use the Webclient.UploadString to POST it to the PSWinCom Gateway.
