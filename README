@@ -24,4 +24,4 @@ when finnished adding all the messages you want to send, you can hand this HashT
 BuildXML along with you Username and Password at the PSWinCom Gateway.
 This will build a XML that can be handed to SendSMS.
 
-SendSMS need the innerxml as a string as we use the Webclient.UploadString to POST it to the PSWinCom Gateway.
+SendSMS need the Outerxml as a string as we use the Webclient.UploadString to POST it to the PSWinCom Gateway.
