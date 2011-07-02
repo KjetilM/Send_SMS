@@ -2,7 +2,7 @@
 #Supply your username password and path to file. ( SendFromfile.ps1 Username Password .\Messages.csv)
 #The file should be a CSV with Phonenumber,Message header then a list of Number,Message pairs.
 
-.{.\SMS_SendMulitiple.ps1} #You need to have the SMS_SendMulitiple.ps1 file in the same dir as this script. Or change the path here.
+. .\PSW_PowerShell.ps1 #You need to have the SMS_SendMulitiple.ps1 file in the same dir as this script. Or change the path here.
 
 $username = $args[0]
 $passord = $args[1]

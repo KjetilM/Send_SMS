@@ -1,10 +1,7 @@
-﻿#Example script that 'Dot Sources' the SMS_SendMulitiple.ps1 script file and uses functions from that script.
+﻿#Example script that 'Dot Sources' the PSW_PowerShell.ps1 script file and uses functions from that script.
 #Usage of this script is simple ' SendSingle.ps1 [PhoneNumber] [Message]'
-
-
-
-
-.{.\SMS_SendMulitiple.ps1} #You need to have the SMS_SendMulitiple.ps1 file in the same dir as this script. Or change the path here.
+Write-Host $PSScriptRoot
+. .\PSW_PowerShell.ps1 #You need to have the PSW_PowerShell.ps1 file in the same dir as this script. Or change the path here.
 function SendSingle
 {
 	param
@@ -16,7 +13,7 @@ function SendSingle
 	)
 	
 	$HT = @{}
-	$MSG_OBJ = CreateMessageObjects -Receiver $PhoneNumber -Message_text $Message
+	$MSG_OBJ = CreateMessageObjects -Receiver $PhoneNumber.tostring() -Message_text $Message.tostring()
 	$HT.add($HT.Count + 1,$MSG_OBJ)
 	
 	$Message_XML = BuildXML -UserName $UserName -Password $Password -HTBL_RCV_MSG $HT

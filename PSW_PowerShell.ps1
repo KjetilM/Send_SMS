@@ -29,18 +29,18 @@
 		$XML_Text.Set_innerText($HTBL_RCV_MSG.item($Message).Message_text)
 		$XML_RCV = $SMS_XML.CreateElement('RCV')
 		$XML_RCV.Set_InnerText($HTBL_RCV_MSG.item($Message).Receiver)
-		if($HTBL_RCV_MSG.item($Message).Sender -ne $null)
+		if($HTBL_RCV_MSG.item($Message).Sender.length -ne 0)
 		{
 			$XML_SND = $SMS_XML.CreateElement('SND')
 			$XML_SND.Set_InnerText($HTBL_RCV_MSG.item($Message).Sender)
 		}
-		if($HTBL_RCV_MSG.item($Message).Deliverytime -ne $null)
+		if($HTBL_RCV_MSG.item($Message).Deliverytime.length -ne 0)
 		{
 			$XML_DELIVERYTIME = $SMS_XML.CreateElement('DELIVERYTIME')
 			$XML_DELIVERYTIME.Set_InnerText($HTBL_RCV_MSG.item($Message).DELIVERYTIME)
 		}
 		
-		if($HTBL_RCV_MSG.item($Message).Deliverytime -ne $null)
+		if($HTBL_RCV_MSG.item($Message).Deliverytime.length -ne 0)
 		{
 			$XML_TTL = $SMS_XML.CreateElement('TTL')
 			$XML_TTL.Set_InnerText($HTBL_RCV_MSG.item($Message).DELIVERYTIME)
@@ -50,9 +50,21 @@
 			$XML_MSG.AppendChild($XML_ID)
 			$XML_MSG.AppendChild($XML_TEXT)
 			$XML_MSG.AppendChild($XML_RCV)
-			$XML_MSG.AppendChild($XML_SND)
-			$XML_MSG.AppendChild($XML_DELIVERYTIME)
-			$XML_MSG.AppendChild($XML_TTL)
+			if($XML_SND -ne $null)
+			{
+				$XML_MSG.AppendChild($XML_SND)
+			}
+			
+			if($XML_DELIVERYTIME -ne $null)
+			{
+				$XML_MSG.AppendChild($XML_DELIVERYTIME)
+			}
+			
+			if($XML_TTL -ne $null)
+			{
+				$XML_MSG.AppendChild($XML_TTL)
+			}
+
 		$ID++
 	}
 	#/MessageList_Block		
