@@ -25,3 +25,18 @@ BuildXML along with you Username and Password at the PSWinCom Gateway.
 This will build a XML that can be handed to SendSMS.
 
 SendSMS need the Outerxml as a string as we use the Webclient.UploadString to POST it to the PSWinCom Gateway.
+
+##############
+Sendsingle.ps1
+##############
+Send a single message (DOH!)
+Provide Receivernumber message username passowrd 
+Receivernumber must include coutrycode
+./Sendsingle.ps1 4712345678 'Message text here' username password
+
+################
+Sendfromfile.ps1
+################
+Reads a CSV file with phonenumbers and messages to send out. 
+First line must be header with text phonenumber,message
+./SendFromFile.ps1 username password 'path to CSV'
