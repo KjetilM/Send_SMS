@@ -31,7 +31,7 @@ Sendsingle.ps1
 ##############
 Send a single message (DOH!)
 Provide Receivernumber message username passowrd 
-Receivernumber must include coutrycode
+Receivernumber must include countrycode
 ./Sendsingle.ps1 4712345678 'Message text here' username password
 
 ################
