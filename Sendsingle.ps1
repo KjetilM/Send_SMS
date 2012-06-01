@@ -34,13 +34,6 @@ function SendSingle
 	
 	sendsms -XMLBLOCK $Message_XML[-1].outerxml.tostring() -Debug $true -Url $Url 
 }
-Write-host $PhoneNumber
-Write-host $Message
-Write-host $UserName
-Write-host $Password
-
-
-
 
 #[XML]$Response = Sendsingle -PhoneNumber $args[0].tostring() -Message $args[1] -UserName $args[2] -Password $args[3] -Sender $args[4].tostring() -REPL $args[5].tostring()
 [XML]$Response = Sendsingle -PhoneNumber $PhoneNumber -Message $Message -UserName $UserName -Password $Password -Sender $Sender -REPL $REPL -Url $Url
