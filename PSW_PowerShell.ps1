@@ -40,11 +40,17 @@
 			$XML_DELIVERYTIME.Set_InnerText($HTBL_RCV_MSG.item($Message).DELIVERYTIME)
 		}
 		
-		if($HTBL_RCV_MSG.item($Message).Deliverytime.length -ne 0)
+		if($HTBL_RCV_MSG.item($Message).TTL.length -ne 0)
 		{
 			$XML_TTL = $SMS_XML.CreateElement('TTL')
-			$XML_TTL.Set_InnerText($HTBL_RCV_MSG.item($Message).DELIVERYTIME)
+			$XML_TTL.Set_InnerText($HTBL_RCV_MSG.item($Message).TTL)
 		}
+		if($HTBL_RCV_MSG.item($Message).REPL.length -ne 0)
+		{
+			$XML_Replace = $SMS_XML.CreateElement('REPLACE')
+			$XML_Replace.Set_InnerText($HTBL_RCV_MSG.item($Message).REPL)
+		}
+
 
 			$XML_MSGLST.AppendChild($XML_MSG)
 			$XML_MSG.AppendChild($XML_ID)
@@ -63,6 +69,10 @@
 			if($XML_TTL -ne $null)
 			{
 				$XML_MSG.AppendChild($XML_TTL)
+			}
+			if($XML_Replace -ne $null)
+			{
+				$XML_MSG.AppendChild($XML_Replace)
 			}
 
 		$ID++
@@ -87,7 +97,7 @@ Function SendSMS
 	(
 		[string]$XMLBLOCK,
 		[Boolean]$Debug,
-		[STRING]$Url = 'http://gw2-fro.pswin.com:81/'
+		[STRING]$Url 
 	)
 	
 	If($Debug -eq 'TRUE')
@@ -96,6 +106,7 @@ Function SendSMS
 	}
 	
 	$Http = New-Object System.Net.WebClient
+	write-host 'Sending SMS to: ' @URL
 	$HttpResponse = $Http.UploadString($Url,'POST',$XMLBLOCK)
 	return $HttpResponse
 
@@ -112,8 +123,9 @@ function CreateMessageObjects
 		[String]$MessageClass,
 		[String]$Sender,
 		[String]$TTL,
-		[String]$deliverytime
-		
+		[String]$deliverytime,
+		[int]$REPL
+				
 	)
 	$Message = New-Object PSObject
 	Add-Member -Input $Message NoteProperty 'Receiver' $Receiver
@@ -123,6 +135,7 @@ function CreateMessageObjects
 	Add-Member -Input $Message NoteProperty 'Sender' $Sender #Number or Name of sender.
 	Add-Member -Input $Message NoteProperty 'TTL' $TTL #time to live in Minutes
 	Add-Member -Input $Message NoteProperty 'deliverytime' $deliverytime #YYYYMMDDHHmm
+	Add-Member -Input $Message NoteProperty 'REPL' $REPL #1-7
 	
 	Return $Message
 }
