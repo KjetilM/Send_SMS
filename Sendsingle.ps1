@@ -1,9 +1,10 @@
 ﻿#Example script that 'Dot Sources' the PSW_PowerShell.ps1 script file and uses functions from that script.
-#Usage of this script is simple ' SendSingle.ps1 [PhoneNumber] [Message]'
+#Usage of this script is simple ' SendSingle.ps1 [Username] [Password] [PhoneNumber] [Message]'
 Write-Host $PSScriptRoot
 . .\PSW_PowerShell.ps1 #You need to have the PSW_PowerShell.ps1 file in the same dir as this script. Or change the path here.
 function SendSingle
 {
+	
 	param
 	(
 		[string]$PhoneNumber,
