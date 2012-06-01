@@ -5,7 +5,7 @@ you will need a valid gateway account with PSWinCom (www.pswin.com)
 ############
 SendSMS.ps1:
 ############
-is a simple example. it uses string replacement on an existing XML String and submitts that to the PSWinCom Gateway
+is a simple example. it uses string replacement on an existing XML String and submits that to the PSWinCom Gateway
 
 
 
@@ -19,7 +19,7 @@ DotSource this file into your own scripts to get access to the functions.
 
 First you need to create the individual message objects with 'CreateMessageObjects'
 Store these message objects in a HashTable.
-when finnished adding all the messages you want to send, you can hand this HashTable overt to:
+when finnished adding all the messages you want to send, you can hand this HashTable over to:
 
 BuildXML along with you Username and Password at the PSWinCom Gateway.
 This will build a XML that can be handed to SendSMS.
@@ -32,7 +32,8 @@ Sendsingle.ps1
 Send a single message (DOH!)
 Provide Receivernumber message username passowrd 
 Receivernumber must include countrycode
-./Sendsingle.ps1 4712345678 'Message text here' username password
+./Sendsingle.ps1 -Phonenumber 4712345678 -message 'Message text here' -UserName username -PassWord password -Sender SenderID -URL Gateway_URL -Repl 1-7
+Note that the -Repl (replace on handset) requires specific access to work. Contact sales or support at www.pswin.com to activate.
 
 ################
 Sendfromfile.ps1
