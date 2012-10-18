@@ -6,7 +6,8 @@
 		[Parameter(mandatory = $true)][String]$Password,
 		[String]$Sender,
 		[String]$Url = 'https://secure.pswin.com/XMLHttpWrapper/process.aspx',
-		[int]$REPL
+		[Int]$REPL,
+		[String]$Class
 	)
 #Example script that 'Dot Sources' the PSW_PowerShell.ps1 script file and uses functions from that script.
 #Usage of this script is simple ' SendSingle.ps1 [Username] [Password] [PhoneNumber] [Message]'
@@ -23,7 +24,8 @@ function SendSingle
 		[String]$Password,
 		[String]$Sender,
 		[String]$Url,
-		[int]$REPL
+		[Int]$REPL,
+		[String]$Class
 	)
 	
 	$HT = @{}
@@ -35,6 +37,9 @@ function SendSingle
 	sendsms -XMLBLOCK $Message_XML[-1].outerxml.tostring() -Debug $true -Url $Url 
 }
 
+
+
+
 #[XML]$Response = Sendsingle -PhoneNumber $args[0].tostring() -Message $args[1] -UserName $args[2] -Password $args[3] -Sender $args[4].tostring() -REPL $args[5].tostring()
-[XML]$Response = Sendsingle -PhoneNumber $PhoneNumber -Message $Message -UserName $UserName -Password $Password -Sender $Sender -REPL $REPL -Url $Url
+[XML]$Response = Sendsingle -PhoneNumber $PhoneNumber -Message $Message -UserName $UserName -Password $Password -Sender $Sender -REPL $REPL -Url $Url -Class $Class
 Write-Host $Response.InnerXml.ToString() 
